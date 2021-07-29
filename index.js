@@ -1,34 +1,12 @@
-const { createStore, applyMiddleware } = require('redux');
-const logger = require('redux-logger').default;
+const { app, port } = require('./src/app.js');
+const { getPhotos } = require('./src/photos.js');
 
-const BUY_CAKE = 'BUY_CAKE';
-const EAT_CAKE = 'EAT_CAKE';
+app.get('/', (req, res) => {
+  getPhotos()
+  .then(photos => res.send(photos))
+  .catch(err => res.send(err));
+});
 
-const buyCake = () => ({ type:BUY_CAKE });
-const eatCake = () => ({ type:EAT_CAKE });
-
-const initialState = {
-  amount: 0
-}
-
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case BUY_CAKE:
-      return {
-        ...state,
-        amount: state.amount + 1
-      }
-    case EAT_CAKE:
-      return {
-        ...state,
-        amount: state.amount - 1
-      }
-    default: return state;
-  }
-}
-
-const store = createStore(reducer, applyMiddleware(logger));
-
-store.dispatch(buyCake());
-store.dispatch(buyCake());
-store.dispatch(eatCake());
+app.listen(port, () => {
+  console.log('Listening on port', port);
+});
