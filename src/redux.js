@@ -1,34 +1,62 @@
 const { createStore, applyMiddleware } = require('redux');
 const logger = require('redux-logger').default;
 
-const BUY_CAKE = 'BUY_CAKE';
-const EAT_CAKE = 'EAT_CAKE';
+const INIT_PHOTOS = 'INIT_PHOTOS';
+const ADD_PHOTO = 'ADD_PHOTO';
+const TOTAL_PHOTOS = 'TOTAL_PHOTOS';
 
-const buyCake = () => ({ type:BUY_CAKE });
-const eatCake = () => ({ type:EAT_CAKE });
+const initPhotos = (photos, limit) => {
+  return { 
+    type: INIT_PHOTOS,
+    payload: photos.filter(photo => Number(photo.id) < 10)
+  }
+};
+
+const addOnePhoto = (photo) => {
+  return { 
+    type: ADD_PHOTO,
+    payload: photo
+  }
+};
+
+const setTotal = () => {
+  return { 
+    type: TOTAL_PHOTOS
+  }
+};
 
 const initialState = {
-  amount: 0
+  photos: [],
+  total: 0
 }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case BUY_CAKE:
+    case INIT_PHOTOS:
       return {
         ...state,
-        amount: state.amount + 1
+        photos: action.payload
       }
-    case EAT_CAKE:
+    case ADD_PHOTO:
       return {
         ...state,
-        amount: state.amount - 1
+        photos: state.photos.push(action.payload)
+      }
+    case TOTAL_PHOTOS:
+      return {
+        ...state,
+        total: state.photos.length
       }
     default: return state;
   }
 }
 
-const store = createStore(reducer, applyMiddleware(logger));
+// const store = createStore(reducer, applyMiddleware(logger));
+const store = createStore(reducer);
 
-store.dispatch(buyCake());
-store.dispatch(buyCake());
-store.dispatch(eatCake());
+module.exports = {
+  store,
+  initPhotos,
+  addOnePhoto,
+  setTotal
+}
