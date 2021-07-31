@@ -8,7 +8,7 @@ const TOTAL_PHOTOS = 'TOTAL_PHOTOS';
 const initPhotos = (photos, limit) => {
   return { 
     type: INIT_PHOTOS,
-    payload: photos.filter(photo => Number(photo.id) < 10)
+    payload: photos.filter(photo => Number(photo.id) < limit)
   }
 };
 
@@ -19,7 +19,7 @@ const addOnePhoto = (photo) => {
   }
 };
 
-const setTotal = () => {
+const getTotal = () => {
   return { 
     type: TOTAL_PHOTOS
   }
@@ -62,5 +62,5 @@ module.exports = {
   store,
   initPhotos,
   addOnePhoto,
-  setTotal
+  getTotal
 }
