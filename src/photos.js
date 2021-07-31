@@ -6,10 +6,13 @@ const { store, initPhotos, addOnePhoto, setTotal } = require('./redux.js');
 const getPhotos = () => {
   return new Promise((resolve, reject) => {
     axios.get(baseUrl + photosEndpoint)
-    .then(photos => {
-      store.dispatch(initPhotos(photos.data, 10));
+    .then(result => {
+      store.dispatch(setTotal());
+      const currentTotal = store.getState().total;
+      store.dispatch(initPhotos(result.data, currentTotal));
+      const photos = store.getState().photos;
       let content = '<a href="/add">Add photo</a>';
-      photos.data.forEach(photo => content += createPhoto(photo));
+      photos.forEach(photo => content += createPhoto(photo));
       resolve(content);
     })
     .catch(err => reject(err));
@@ -21,10 +24,15 @@ const addPhoto = () => {
     store.dispatch(setTotal());
     const total = store.getState().total;
     const url = `${baseUrl}${photosEndpoint}/${total + 1}`;
+    let content = '<a href="/">See all photos</a>';
     axios.get(url)
     .then(photo => {
       store.dispatch(addOnePhoto(photo.data));
-      const content = createPhoto(photo.data);
+      store.dispatch(setTotal());
+      const photos = store.getState().photos;
+      const lastPhoto = photos[photos.length - 1];
+      content += createPhoto(lastPhoto);
+      console.log(store.getState())
       resolve(content);
     })
     .catch(err => reject(err));

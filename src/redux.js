@@ -13,7 +13,7 @@ const initPhotos = (photos, limit) => {
 };
 
 const addOnePhoto = (photo) => {
-  return { 
+  return {
     type: ADD_PHOTO,
     payload: photo
   }
@@ -27,7 +27,7 @@ const setTotal = () => {
 
 const initialState = {
   photos: [],
-  total: 0
+  total: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -35,12 +35,16 @@ const reducer = (state = initialState, action) => {
     case INIT_PHOTOS:
       return {
         ...state,
-        photos: action.payload
+        photos: action.payload,
+        total: state.photos.length
       }
     case ADD_PHOTO:
+      const updatedPhotos = [...state.photos];
+      updatedPhotos.push(action.payload);
       return {
         ...state,
-        photos: state.photos.push(action.payload)
+        photos: updatedPhotos,
+        total: updatedPhotos.length
       }
     case TOTAL_PHOTOS:
       return {
